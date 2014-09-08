@@ -292,6 +292,44 @@ describe('BrowserStackTunnel', function () {
     }, 100);
   });
 
+  it('should support the onlyAutomate option', function (done) {
+    spawnSpy.reset();
+    var browserStackTunnel = new bs.BrowserStackTunnel({
+      key: KEY,
+      onlyAutomate: true,
+      hosts: [{
+        name: HOST_NAME,
+        port: PORT,
+        sslFlag: SSL_FLAG
+      }, {
+        name: HOST_NAME2,
+        port: PORT2,
+        sslFlag: SSL_FLAG2
+      }],
+      win32Bin: WIN32_BINARY_DIR
+    });
+    browserStackTunnel.start(function (error) {
+      if (error) {
+        expect().fail(function () { return error; });
+      } else if (browserStackTunnel.state === 'started') {
+        sinon.assert.calledOnce(spawnSpy);
+        sinon.assert.calledWithExactly(
+          spawnSpy,
+          WIN32_BINARY_FILE, [
+            KEY,
+            '-onlyAutomate',
+            HOST_NAME + ',' + PORT + ',' + SSL_FLAG + ',' + HOST_NAME2 + ',' + PORT2 + ',' + SSL_FLAG2
+          ]
+        );
+        done();
+      }
+    });
+
+    setTimeout(function () {
+      process.emit('mock:child_process:stdout:data', 'monkey-----  Press Ctrl-C to exit ----monkey');
+    }, 100);
+  });
+
   it('should use the specified binary directory', function (done) {
     spawnSpy.reset();
     var browserStackTunnel = new bs.BrowserStackTunnel({

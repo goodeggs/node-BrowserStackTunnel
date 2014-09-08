@@ -11,6 +11,10 @@ function parseHostOptions(options, params) {
     params.push('-only');
   }
 
+  if (options.onlyAutomate) {
+    params.push('-onlyAutomate');
+  }
+
   var hosts = '';
   options.hosts.forEach(function (host) {
     if (hosts.length > 0) {
