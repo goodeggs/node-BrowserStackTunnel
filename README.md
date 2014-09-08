@@ -31,6 +31,7 @@ var browserStackTunnel = new BrowserStackTunnel({
   linux64Bin: 'your_bin_dir', // optionally override the default bin directory for the Linux 64 bit binary
   win32Bin: 'your_bin_dir', // optionally override the default bin directory for the win32 binary
   tunnelIdentifier: 'my_tunnel', // optionally set the -tunnelIdentifier option
+  only: true, // optionally set the -only option
   skipCheck: true, // optionally set the -skipCheck option
   v: true, // optionally set the -v (verbose) option
   proxyUser: PROXY_USER, // optionally set the -proxyUser option

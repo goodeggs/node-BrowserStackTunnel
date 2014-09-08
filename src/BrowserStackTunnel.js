@@ -5,6 +5,41 @@ var util = require('util'),
     os = require('os'),
     ZipBinary = require('./ZipBinary');
 
+function parseHostOptions(options, params) {
+  'use strict';
+  if (options.only) {
+    params.push('-only');
+  }
+
+  var hosts = '';
+  options.hosts.forEach(function (host) {
+    if (hosts.length > 0) {
+      hosts += ',';
+    }
+    hosts += host.name + ',' + host.port + ',' + host.sslFlag;
+  });
+  params.push(hosts);
+}
+
+function parseProxyOptions(options, params) {
+  'use strict';
+  if (options.proxyHost) {
+    params.push('-proxyHost', options.proxyHost);
+  }
+
+  if (options.proxyPort) {
+    params.push('-proxyPort', options.proxyPort);
+  }
+
+  if (options.proxyUser) {
+    params.push('-proxyUser', options.proxyUser);
+  }
+
+  if (options.proxyPass) {
+    params.push('-proxyPass', options.proxyPass);
+  }
+}
+
 function BrowserStackTunnel(options) {
   'use strict';
   var params = [];
@@ -32,14 +67,7 @@ function BrowserStackTunnel(options) {
   this.stdoutData = '';
   this.tunnel = null;
 
-  var hosts = '';
-  options.hosts.forEach(function (host) {
-    if (hosts.length > 0) {
-      hosts += ',';
-    }
-    hosts += host.name + ',' + host.port + ',' + host.sslFlag;
-  });
-  params.push(hosts);
+  parseHostOptions(options, params);
 
   if (options.tunnelIdentifier) {
     params.push('-tunnelIdentifier', options.tunnelIdentifier);
@@ -53,21 +81,7 @@ function BrowserStackTunnel(options) {
     params.push('-v');
   }
 
-  if (options.proxyHost) {
-    params.push('-proxyHost', options.proxyHost);
-  }
-
-  if (options.proxyPort) {
-    params.push('-proxyPort', options.proxyPort);
-  }
-
-  if (options.proxyUser) {
-    params.push('-proxyUser', options.proxyUser);
-  }
-
-  if (options.proxyPass) {
-    params.push('-proxyPass', options.proxyPass);
-  }
+  parseProxyOptions(options, params);
 
   this.state = 'stop';
   this.stateMatchers = {
